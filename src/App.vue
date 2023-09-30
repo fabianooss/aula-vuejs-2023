@@ -45,6 +45,14 @@ function adicionarNome() {
   nomeParaAdicionar.value = ''
 }
 
+function excluir(nomeParaExcluir) {
+  console.log(nomeParaExcluir)
+  let idx = nomes.value.indexOf(nomeParaExcluir)
+  if (idx > -1) {
+    nomes.value.splice(idx, 1)
+  }
+}
+
 
 </script>
 
@@ -71,7 +79,8 @@ function adicionarNome() {
     <button @click="adicionarNome()">Adicionar</button><br>
 
     <ol>
-      <li v-for="n in nomes">{{ n }}</li>
+      <li v-for="n in nomes">{{ n }}  
+      <a href="#" @click="excluir(n)">Excluir</a>  </li>
     </ol>
 
     <table>
