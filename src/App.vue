@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 const titulo = ref('Meu título dinâmico')
 const quantidadeLetras = ref()
@@ -10,7 +10,17 @@ const carros = ref([
   {nome: "Variante", valor: 2000, cor:"Amarela"},
   {nome: "Brasilia", valor: 3000, cor:"Branca"},
 ])
+const filtro = ref('')
 const nomeParaAdicionar = ref('')
+
+const nomesFiltrados = computed(() => {
+  if (filtro.value == '') {
+    return nomes.value
+  }
+  return nomes.value.filter(n => {
+    return n.toLowerCase().startsWith(filtro.value.toLowerCase())
+  })
+})
 
 
 function upper() {
@@ -75,11 +85,22 @@ function excluir(nomeParaExcluir) {
     </div>
 
     <br>
-    <input type="text" v-model="nomeParaAdicionar"/>
-    <button @click="adicionarNome()">Adicionar</button><br>
+    <hr>
+      <form @submit.prevent="adicionarNome()">
+        <label for="nome">Nome</label>
+        <input type="text" v-model="nomeParaAdicionar" required/>
+        <button type="submit">Adicionar</button><br>
+      </form>  
+    <hr>
 
+    <hr>
+      <div :class="{ destaque : filtro != '' }">
+        <label for="filtro">Filtro</label>  
+        <input type="text" id="filtro" v-model="filtro"/>
+      </div>
+    <hr>
     <ol>
-      <li v-for="n in nomes">{{ n }}  
+      <li v-for="n in nomesFiltrados">{{ n }}  
       <a href="#" @click="excluir(n)">Excluir</a>  </li>
     </ol>
 
@@ -119,5 +140,9 @@ function excluir(nomeParaExcluir) {
 }
 .logo.vue:hover {
   filter: drop-shadow(0 0 2em #42b883aa);
+}
+
+.destaque {
+  background-color: yellow;
 }
 </style>
