@@ -12,6 +12,7 @@ const carros = ref([
 ])
 const filtro = ref('')
 const nomeParaAdicionar = ref('')
+const indexEditar = ref(-1)
 
 const nomesFiltrados = computed(() => {
   if (filtro.value == '') {
@@ -50,9 +51,13 @@ function contarLetras() {
           letra.toLowerCase() == 'à' ).length
 }
 
-function adicionarNome() {
-  nomes.value.push(nomeParaAdicionar.value)
+function adicionarAlterarNome() {
+  if (indexEditar.value < 0)
+    nomes.value.push(nomeParaAdicionar.value)
+  else 
+    nomes.value[indexEditar.value] = nomeParaAdicionar.value
   nomeParaAdicionar.value = ''
+  indexEditar.value = -1
 }
 
 function excluir(nomeParaExcluir) {
@@ -61,6 +66,11 @@ function excluir(nomeParaExcluir) {
   if (idx > -1) {
     nomes.value.splice(idx, 1)
   }
+}
+
+function editar(idx) {
+  indexEditar.value = idx
+  nomeParaAdicionar.value = nomes.value[idx]
 }
 
 
@@ -86,10 +96,17 @@ function excluir(nomeParaExcluir) {
 
     <br>
     <hr>
-      <form @submit.prevent="adicionarNome()">
+      <form @submit.prevent="adicionarAlterarNome()">
         <label for="nome">Nome</label>
         <input type="text" v-model="nomeParaAdicionar" required/>
-        <button type="submit">Adicionar</button><br>
+        <button type="submit">
+          <span v-if="indexEditar < 0">
+            Adicionar
+          </span>
+          <span v-else>
+            Editar
+          </span>  
+        </button><br>
       </form>  
     <hr>
 
@@ -100,8 +117,10 @@ function excluir(nomeParaExcluir) {
       </div>
     <hr>
     <ol>
-      <li v-for="n in nomesFiltrados">{{ n }}  
-      <a href="#" @click="excluir(n)">Excluir</a>  </li>
+      <li v-for="(n, idx) in nomesFiltrados">{{ n }}  
+
+      <a href="#" @click="editar(idx)">Editar</a>
+      <a href="#" @click="excluir(n)">Excluir</a> </li>
     </ol>
 
     <table>
